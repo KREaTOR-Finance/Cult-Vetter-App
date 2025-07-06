@@ -20,7 +20,7 @@ interface Project {
   volume24h: number
   price: number
   priceChange: number
-  logo: string
+  logo?: string
 }
 
 interface ProjectCardProps {
@@ -52,11 +52,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <img 
-            src={project.logo} 
-            alt={project.name}
-            className="w-10 h-10 rounded-full"
-          />
+          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-lg font-bold text-gray-700">
+            {project.symbol.charAt(0).toUpperCase()}
+          </div>
           <div>
             <h3 className="font-semibold">{project.name}</h3>
             <p className="text-sm text-muted-foreground">{project.symbol}</p>

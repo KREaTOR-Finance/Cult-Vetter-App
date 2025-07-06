@@ -241,7 +241,9 @@ export default function AdminPanel() {
             {partners.map((partner) => (
               <div key={partner.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <img src={partner.logo} alt={partner.name} className="w-8 h-8 rounded" />
+                  <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-base font-bold text-gray-700">
+                    {partner.name ? partner.name.charAt(0).toUpperCase() : '?'}
+                  </div>
                   <div>
                     <p className="font-medium">{partner.name}</p>
                     <p className="text-sm text-muted-foreground">{partner.website}</p>

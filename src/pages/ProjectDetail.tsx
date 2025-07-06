@@ -90,11 +90,9 @@ export default function ProjectDetail() {
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div className="flex items-center space-x-3">
-          <img 
-            src={project.logo} 
-            alt={project.name}
-            className="w-12 h-12 rounded-full"
-          />
+          <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-lg font-bold text-gray-700">
+            {project.symbol.charAt(0).toUpperCase()}
+          </div>
           <div>
             <h1 className="text-2xl font-bold">{project.name}</h1>
             <p className="text-muted-foreground">{project.symbol}</p>

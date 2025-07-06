@@ -11,6 +11,7 @@ import {
   Bell,
   Search
 } from 'lucide-react'
+import stickerCult from '../assets/stickerCult2.png'
 
 interface HeaderProps {
   onMenuClick: () => void
@@ -45,9 +46,7 @@ export default function Header({
         </button>
         
         <Link to="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gradient-to-r from-primary to-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">CV</span>
-          </div>
+          <img src={stickerCult} alt="CultVetter Logo" className="w-8 h-8 rounded-lg object-cover border border-yellow-400 shadow" />
           <span className="font-bold text-lg hidden sm:block">CULTVETTER</span>
         </Link>
       </div>

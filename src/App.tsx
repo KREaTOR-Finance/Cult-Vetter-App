@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Moon, Sun, Menu, X } from 'lucide-react'
@@ -9,6 +8,7 @@ import Dashboard from './pages/Dashboard'
 import ProjectDetail from './pages/ProjectDetail'
 import VetterDashboard from './pages/VetterDashboard'
 import AdminPanel from './pages/AdminPanel'
+import SubmitProject from './pages/SubmitProject'
 
 // Components
 import Sidebar from './components/Sidebar'
@@ -22,11 +22,18 @@ interface User {
   role: 'GUEST' | 'MEMBER' | 'ADMIN'
 }
 
+// Mock user for static demo
+const MOCK_USER: User = {
+  id: '1',
+  address: 'rEXAMPLETesTAddR1234567890',
+  role: 'MEMBER',
+}
+
 function App() {
-  const { data: session, status } = useSession()
   const [darkMode, setDarkMode] = useState(true)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [showAuthModal, setShowAuthModal] = useState(true)
+  const [user, setUser] = useState<User | null>(null)
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -39,19 +46,21 @@ function App() {
     document.documentElement.classList.add('dark')
   }, [])
 
-  // Show auth modal if not authenticated
+  // Show wallet modal on first load if not connected
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      setShowAuthModal(true)
-    }
-  }, [status])
+    if (!user) setShowAuthModal(true)
+  }, [user])
 
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    )
+  // Handle wallet connect (mock)
+  const handleWalletConnect = () => {
+    setUser(MOCK_USER)
+    setShowAuthModal(false)
+  }
+
+  // Handle wallet disconnect
+  const handleWalletDisconnect = () => {
+    setUser(null)
+    setShowAuthModal(true)
   }
 
   return (
@@ -62,7 +71,7 @@ function App() {
           <Sidebar 
             isOpen={sidebarOpen} 
             onClose={() => setSidebarOpen(false)}
-            user={session?.user as User}
+            user={user as User}
           />
 
           {/* Main Content */}
@@ -72,7 +81,7 @@ function App() {
               onMenuClick={() => setSidebarOpen(true)}
               onThemeToggle={toggleDarkMode}
               darkMode={darkMode}
-              user={session?.user as User}
+              user={user as User}
               onAuthClick={() => setShowAuthModal(true)}
             />
 
@@ -84,6 +93,7 @@ function App() {
                   <Route path="/project/:id" element={<ProjectDetail />} />
                   <Route path="/vetter" element={<VetterDashboard />} />
                   <Route path="/admin" element={<AdminPanel />} />
+                  <Route path="/submit-project" element={<SubmitProject />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </AnimatePresence>
@@ -94,7 +104,9 @@ function App() {
         {/* Auth Modal */}
         <AuthModal 
           isOpen={showAuthModal}
-          onClose={() => setShowAuthModal(false)}
+          onConnect={handleWalletConnect}
+          onDisconnect={handleWalletDisconnect}
+          user={user}
         />
       </Router>
     </div>

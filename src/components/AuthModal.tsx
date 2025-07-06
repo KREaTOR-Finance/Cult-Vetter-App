@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Wallet, Shield, Zap } from 'lucide-react'
-import { signIn, signOut, useSession } from 'next-auth/react'
 
 interface AuthModalProps {
   isOpen: boolean
-  onClose: () => void
+  onConnect: () => void
+  onDisconnect: () => void
+  user: any
 }
 
 const walletOptions = [
@@ -25,27 +26,18 @@ const walletOptions = [
   },
 ]
 
-export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { data: session } = useSession()
+export default function AuthModal({ isOpen, onConnect, onDisconnect, user }: AuthModalProps) {
   const [isConnecting, setIsConnecting] = useState(false)
 
   const handleWalletConnect = async (provider: string) => {
     setIsConnecting(true)
-    try {
-      await signIn(provider, { callbackUrl: '/' })
-    } catch (error) {
-      console.error('Authentication error:', error)
-    } finally {
+    setTimeout(() => {
+      onConnect()
       setIsConnecting(false)
-    }
+    }, 800)
   }
 
-  const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/' })
-    onClose()
-  }
-
-  if (session) {
+  if (user) {
     return (
       <AnimatePresence>
         {isOpen && (
@@ -54,7 +46,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-            onClick={onClose}
+            onClick={onDisconnect}
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
@@ -66,7 +58,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Connected</h2>
                 <button
-                  onClick={onClose}
+                  onClick={onDisconnect}
                   className="p-2 rounded-md hover:bg-accent transition-colors"
                 >
                   <X className="h-5 w-5" />
@@ -80,16 +72,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   </div>
                   <div>
                     <p className="font-medium">
-                      {(session.user as any)?.address?.slice(0, 6)}...{(session.user as any)?.address?.slice(-4)}
+                      {user.address.slice(0, 6)}...{user.address.slice(-4)}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {(session.user as any)?.role || 'Member'}
+                      {user.role}
                     </p>
                   </div>
                 </div>
 
                 <button
-                  onClick={handleSignOut}
+                  onClick={onDisconnect}
                   className="w-full px-4 py-2 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors"
                 >
                   Disconnect Wallet
@@ -110,7 +102,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-          onClick={onClose}
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
@@ -127,7 +118,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 </p>
               </div>
               <button
-                onClick={onClose}
+                onClick={onConnect}
                 className="p-2 rounded-md hover:bg-accent transition-colors"
               >
                 <X className="h-5 w-5" />

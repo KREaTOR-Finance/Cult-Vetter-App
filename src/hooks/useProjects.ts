@@ -28,7 +28,7 @@ interface ProjectsResponse {
 }
 
 interface UseProjectsOptions {
-  status?: 'VETTING' | 'APPROVED' | 'PARTNERSHIP'
+  status?: 'VETTING' | 'APPROVED' | 'PARTNERSHIP' | 'ALL'
   page?: number
   limit?: number
   search?: string
@@ -154,12 +154,7 @@ export function useProjects(options: UseProjectsOptions = {}) {
       const limit = options.limit || 20;
       const start = (page - 1) * limit;
       const end = start + limit;
-      return {
-        projects: filtered.slice(start, end),
-        total: filtered.length,
-        page,
-        limit,
-      };
+      return filtered.slice(start, end);
     },
     staleTime: Infinity,
     refetchInterval: false,
