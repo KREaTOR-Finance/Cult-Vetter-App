@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Moon, Sun, Menu, X } from 'lucide-react'
 
@@ -65,7 +65,7 @@ function App() {
 
   return (
     <div className={`min-h-screen bg-background text-foreground ${darkMode ? 'dark' : ''}`}>
-      <Router>
+      <BrowserRouter basename="/Cult-Vetter-App">
         <div className="flex h-screen">
           {/* Sidebar */}
           <Sidebar 
@@ -108,7 +108,7 @@ function App() {
           onDisconnect={handleWalletDisconnect}
           user={user}
         />
-      </Router>
+      </BrowserRouter>
     </div>
   )
 }
